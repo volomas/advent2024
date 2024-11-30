@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -17,13 +18,24 @@ func ReadLines(fileName string) []string {
 	return strings.Split(strings.TrimSpace(content), "\n")
 }
 
+//Creates NxM grid with all cells set to initialValue	
 func CreateGrid[T any](n, m int, initialValue T) [][]T {
-    grid := make([][]T, n)
-    for i := 0; i < n; i++ {
-        grid[i] = make([]T, m)
-        for j := 0; j < m; j++ {
-            grid[i][j] = initialValue
-        }
-    }
-    return grid
+	grid := make([][]T, n)
+	for i := 0; i < n; i++ {
+		grid[i] = make([]T, m)
+		for j := 0; j < m; j++ {
+			grid[i][j] = initialValue
+		}
+	}
+	return grid
+}
+
+//Prints 2d grid
+func PrintGrid[T any](grid [][]T) {
+	for _, x := range grid {
+		for _, y := range x {
+			fmt.Printf("%v ", y)
+		}
+		fmt.Println()
+	}
 }
