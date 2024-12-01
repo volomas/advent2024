@@ -39,3 +39,11 @@ func PrintGrid[T any](grid [][]T) {
 		fmt.Println()
 	}
 }
+
+func Difference(a, b int) int {
+	if a < b {
+		return b - a
+	} else {
+		return a - b
+	}
+}

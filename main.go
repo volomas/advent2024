@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -15,10 +16,17 @@ func main() {
 	} else {
 		cmd = exec.Command("go", "run", "./day"+day, "day"+day+"/input.txt")
 	}
-	cmd.Stdout = os.Stdout
+	var outBuff bytes.Buffer
+	cmd.Stdout = &outBuff
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
+	fmt.Print(outBuff.String())
 	if err != nil {
+		fmt.Println("Error ", err)
+	}
+	copy := exec.Command("pbcopy")
+	copy.Stdin = &outBuff
+	if err := copy.Run(); err != nil {
 		fmt.Println("Error ", err)
 	}
 }
