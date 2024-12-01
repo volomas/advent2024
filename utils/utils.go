@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -38,6 +39,24 @@ func PrintGrid[T any](grid [][]T) {
 		}
 		fmt.Println()
 	}
+}
+
+func IntFields(str string) []int {
+	fields := strings.Fields(str)
+	res := make([]int, len(fields))
+	for i, f := range fields {
+		num := Must(strconv.Atoi(f))
+		res[i] = num
+	}
+
+	return res
+}
+
+func Must[T any](obj T, err error) T {
+    if err != nil {
+        panic(err)
+    }
+    return obj
 }
 
 func Difference(a, b int) int {
