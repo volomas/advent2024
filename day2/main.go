@@ -6,16 +6,56 @@ import (
 	"vmas/advent2024/utils"
 )
 
-func isUnsafe(prev, curr int, increasing bool) bool {
+func isLevelSafe(prev, curr int, increasing bool) bool {
 	if prev == curr || utils.Difference(prev, curr) > 3 {
-		return true
+		return false
 	}
 
 	if (increasing && curr < prev) || (!increasing && curr > prev) {
-		return true
+		return false
 	}
 
-	return false
+	return true
+}
+
+func reportSafe(report []int, skipLevel bool) bool {
+	reportSafe := true
+	inc := report[0] < report[(len(report)-1)]
+	i := 0
+	j := 1
+	for j < len(report) {
+		prev := report[i]
+		curr := report[j]
+		levelSafe := isLevelSafe(prev, curr, inc)
+
+		if levelSafe {
+			i++
+			j++
+			continue
+		}
+
+		if !skipLevel || !reportSafe {
+			// second time we hit unsafe report - we abort
+			return false
+		}
+
+		if i == len(report)-1 {
+			// if we comparing last pair, it doesn matter if it's unsafe, we can skip it
+			return true
+		}
+
+		nextLevelSafe := isLevelSafe(prev, report[j+1], inc)
+		if nextLevelSafe {
+			i += 2
+			j += 2
+			reportSafe = false
+			continue
+		} else {
+			return false
+		}
+	}
+
+	return true
 }
 
 func main() {
@@ -23,20 +63,10 @@ func main() {
 	for _, line := range utils.ReadLines(os.Args[1]) {
 		report := utils.IntFields(line)
 
-		reportSafe := true
-		inc := report[0] < report[(len(report)-1)]
-		for i := 1; i < len(report); i++ {
-			prev := report[i-1]
-			curr := report[i]
-
-			if isUnsafe(prev, curr, inc) {
-				reportSafe = false
-				break
-			}
-
-		}
-
-		if reportSafe {
+		if reportSafe(report, false) ||
+			reportSafe(report[1:], false) ||
+			reportSafe(report[0:len(report)-1], false) ||
+			reportSafe(report, true) {
 			safe += 1
 		}
 	}
