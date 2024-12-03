@@ -1,2 +1,3 @@
 - [ ] organize imports in go (shortcut =o or automatically)
 - [ ] turn of autosave?
+- [ ] extract variable
