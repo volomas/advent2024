@@ -52,6 +52,17 @@ func IntFields(str string) []int {
 	return res
 }
 
+func IntFieldsSep(str, sep string) []int {
+	fields := strings.Split(str, sep)
+	res := make([]int, len(fields))
+	for i, f := range fields {
+		num := Must(strconv.Atoi(f))
+		res[i] = num
+	}
+
+	return res
+}
+
 func Must[T any](obj T, err error) T {
     if err != nil {
         panic(err)
