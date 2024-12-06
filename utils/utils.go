@@ -19,7 +19,7 @@ func ReadLines(fileName string) []string {
 	return strings.Split(strings.TrimSpace(content), "\n")
 }
 
-//Creates NxM grid with all cells set to initialValue	
+// Creates NxM grid with all cells set to initialValue
 func CreateGrid[T any](n, m int, initialValue T) [][]T {
 	grid := make([][]T, n)
 	for i := 0; i < n; i++ {
@@ -31,7 +31,7 @@ func CreateGrid[T any](n, m int, initialValue T) [][]T {
 	return grid
 }
 
-//Prints 2d grid
+// Prints 2d grid
 func PrintGrid[T any](grid [][]T) {
 	for _, x := range grid {
 		for _, y := range x {
@@ -64,10 +64,10 @@ func IntFieldsSep(str, sep string) []int {
 }
 
 func Must[T any](obj T, err error) T {
-    if err != nil {
-        panic(err)
-    }
-    return obj
+	if err != nil {
+		panic(err)
+	}
+	return obj
 }
 
 func Difference(a, b int) int {
