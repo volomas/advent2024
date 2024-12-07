@@ -138,5 +138,6 @@ func main() {
 	visited := make(map[string]bool)
 	Walk(0, visited, startY, startX, startDir)
 
+	fmt.Println(len(visited))
 	fmt.Println(len(uniqLoops))
 }
