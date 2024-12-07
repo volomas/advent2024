@@ -43,7 +43,7 @@ func buildOrder(pairsBlock string) {
 
 func middle(list []int) int {
 	// always odd
-	return list[len(list) / 2]
+	return list[len(list)/2]
 }
 
 func main() {
@@ -63,4 +63,3 @@ func main() {
 
 	fmt.Println(sum)
 }
-

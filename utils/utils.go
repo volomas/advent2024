@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
+
+var digitsRegexp *regexp.Regexp = regexp.MustCompile(`\d+`)
 
 func ReadLines(fileName string) []string {
 	fileBytes, err := os.ReadFile(fileName)
@@ -53,9 +56,9 @@ func IntFields(str string) []int {
 }
 
 func IntFieldsSep(str, sep string) []int {
-	fields := strings.Split(str, sep)
-	res := make([]int, len(fields))
-	for i, f := range fields {
+	digits := digitsRegexp.FindAllString(str, -1)
+	res := make([]int, len(digits))
+	for i, f := range digits {
 		num := Must(strconv.Atoi(f))
 		res[i] = num
 	}
