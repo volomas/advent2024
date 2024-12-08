@@ -38,7 +38,7 @@ func CreateGrid[T any](n, m int, initialValue T) [][]T {
 func PrintGrid[T any](grid [][]T) {
 	for _, x := range grid {
 		for _, y := range x {
-			fmt.Printf("%v ", y)
+			fmt.Printf("%c", y)
 		}
 		fmt.Println()
 	}
