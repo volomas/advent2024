@@ -8,9 +8,11 @@ import (
 	"vmas/advent2024/utils"
 )
 
+var moved map[int]bool = make(map[int]bool)
+
 func main() {
-	file, _ := os.ReadFile(os.Args[1])
-	input := strings.TrimSpace(string(file))
+	content, _ := os.ReadFile(os.Args[1])
+	input := strings.TrimSpace(string(content))
 
 	id := 0
 	memory := make([]int, 0)
@@ -31,18 +33,45 @@ func main() {
 		id += 1
 	}
 
-	fmt.Println(memory)
+	// fmt.Println(memory)
 	// fmt.Println(Layout(memory))
-	s, e := FirstFreeBlock(memory)
-	fmt.Printf("%d-%d\n", s, e)
-	for i := len(memory) - 1; i > 0; i-- {
-		s, _ := FirstFreeBlock(memory)
-		if s == -1 || s > i {
-			break
-		}
-		if memory[i] != -1 {
-			memory[s] = memory[i]
-			memory[i] = -1
+	prevFile := memory[len(memory)-1]
+	fileSize := 1
+	for i := len(memory) - 2; i > 0; i-- {
+		currentFile := memory[i]
+
+		if prevFile == currentFile {
+			fileSize += 1
+			continue
+		} else {
+			fileToMove := prevFile
+			fileToMoveSize := fileSize
+
+			prevFile = currentFile
+			fileSize = 1
+
+			_, ok := moved[fileToMove]
+			if fileToMove == -1 || ok {
+				continue
+			}
+
+			// fmt.Printf("File %d with size %d. idx=%d\n", fileToMove, fileToMoveSize, i)
+
+			s, e := FindFree(memory, fileToMoveSize, i)
+
+			if s < 0 || e < 0 {
+				// fmt.Println("No free space to move")
+				continue
+			}
+
+			// fmt.Printf("Found free block [%d -> %d] of size %d\n", s, e, fileToMoveSize)
+
+			for j := 0; j < fileToMoveSize; j++ {
+				memory[s+j] = fileToMove
+				memory[i+1+j] = -1
+			}
+
+			moved[fileToMove] = true
 		}
 	}
 
@@ -53,23 +82,42 @@ func main() {
 		}
 	}
 
-	fmt.Println(Layout(memory))
+	// fmt.Println(Layout(memory))
+
+	// fmt.Println("input size", len(input))
+	// fmt.Println("Memory size", len(memory))
 	fmt.Println(checksum)
 }
 
-func FirstFreeBlock(memory []int) (int, int) {
+func FindFree(memory []int, size int, upTo int) (int, int) {
 	start, end := -1, -1
-	for i, val := range memory {
+
+	for i := 0; i <= upTo; i++ {
+		val := memory[i]
+
 		if start == -1 && val == -1 {
 			start = i
+			continue
 		}
 
 		if start != -1 && val != -1 {
 			end = i - 1
-			break
+
+			if end-start+1 >= size {
+				return start, end
+			} else {
+				start, end = -1, -1
+			}
 		}
 	}
-	return start, end
+
+	if start >= 0 && end == -1 {
+		if (upTo - start + 1) >= size {
+			return start, upTo
+		}
+	}
+
+	return -1, -1
 }
 
 func Layout(memory []int) string {
@@ -82,5 +130,6 @@ func Layout(memory []int) string {
 			layout += fmt.Sprint(e)
 		}
 	}
+
 	return layout
 }
