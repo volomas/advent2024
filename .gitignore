@@ -1,5 +1,6 @@
 **/input.txt
 run
-**/yura.txt
-**/kulpa.txt
+.idea
+**/yura*.txt
+**/kulpa*.txt
 .DS_Store
