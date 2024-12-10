@@ -11,6 +11,78 @@ import (
 
 var digitsRegexp *regexp.Regexp = regexp.MustCompile(`\d+`)
 
+type Grid[T any] [][]T
+
+func (g Grid[T]) IsOut(c Cell) bool {
+	return c.Row < 0 || c.Row > len(g)-1 || c.Coll < 0 || c.Coll > len(g[0])-1
+}
+
+func (g Grid[T]) ValAt(c Cell) T {
+	return g[c.Row][c.Coll]
+}
+
+func (g Grid[T]) Next4(c Cell) []Cell {
+	next := make([]Cell, 0)
+
+	up := Cell{c.Row - 1, c.Coll}
+	down := Cell{c.Row + 1, c.Coll}
+	left := Cell{c.Row, c.Coll - 1}
+	right := Cell{c.Row, c.Coll + 1}
+
+	for _, n := range []Cell{up, down, left, right} {
+		if !g.IsOut(n) {
+			next = append(next, n)
+		}
+	}
+
+	return next
+}
+
+func (g Grid[T]) Next8(c Cell) []Cell {
+	next := g.Next4(c)
+	for _, n := range []Cell{
+		{c.Row - 1, c.Coll - 1},
+		{c.Row - 1, c.Coll + 1},
+		{c.Row + 1, c.Coll - 1},
+		{c.Row + 1, c.Coll + 1},
+	} {
+		if !g.IsOut(n) {
+			next = append(next, n)
+		}
+	}
+
+	return next
+}
+
+type Cell struct{ Row, Coll int }
+
+func NewCell(row, coll int) Cell {
+	return Cell{row, coll}
+}
+
+func ParseIntGrid(lines []string) Grid[int] {
+	grid := make([][]int, len(lines))
+	for row, line := range lines {
+		grid[row] = make([]int, len(line))
+		for col, val := range line {
+			intVal := Must(strconv.Atoi(string(val)))
+			grid[row][col] = intVal
+		}
+	}
+	return grid
+}
+
+func ParseCharGrid(lines []string) Grid[rune] {
+	grid := make([][]rune, len(lines))
+	for row, line := range lines {
+		grid[row] = make([]rune, len(line))
+		for col, val := range line {
+			grid[row][col] = val
+		}
+	}
+	return grid
+}
+
 func ReadLines(fileName string) []string {
 	fileBytes, err := os.ReadFile(fileName)
 	if err != nil {
