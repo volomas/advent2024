@@ -116,6 +116,17 @@ func PrintGrid[T any](grid [][]T) {
 	}
 }
 
+func Int64Fields(str string) []int64 {
+	fields := strings.Fields(str)
+	res := make([]int64, len(fields))
+	for i, f := range fields {
+		num := Must(strconv.ParseInt(f, 10, 64))
+		res[i] = num
+	}
+
+	return res
+}
+
 func IntFields(str string) []int {
 	fields := strings.Fields(str)
 	res := make([]int, len(fields))
