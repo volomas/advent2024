@@ -9,52 +9,45 @@ import (
 
 const BLINKS = 75
 
-var table []map[int64]int = make([]map[int64]int, BLINKS)
-
 func main() {
-	for i := 0; i < BLINKS; i++ {
-		table[i] = make(map[int64]int)
+	lines := utils.ReadLines(os.Args[1])
+	stones := utils.IntFields(lines[0])
+
+	//count occurence of each stone (refresh at each step)
+	_map := make(map[int]int)
+
+	for _, s := range stones {
+		_map[s]++
 	}
 
-	lines := utils.ReadLines(os.Args[1])
-	stones := utils.Int64Fields(lines[0])
+	for i := 1; i <= BLINKS; i++ {
+		newMap := make(map[int]int)
+		for stone, count := range _map {
+			for _, newStone := range split(stone) {
+				newMap[newStone] += count
+			}
+		}
+		_map = newMap
+	}
 
 	count := 0
-	for _, stone := range stones {
-		count += Count(BLINKS, stone)
+	for _, v := range _map {
+		count += v
 	}
 	fmt.Println(count)
 }
 
-func Count(blinks int, stone int64) int {
-	stones := split(stone)
-	if blinks == 1 {
-		return len(stones)
-	} else if c, ok := table[blinks-1][stone]; ok {
-		return c
-	} else {
-		count := 0
-		for _, stone := range stones {
-			count += Count(blinks-1, stone)
-		}
-
-		table[blinks-1][stone] = count
-		return count
-	}
-
-}
-
-func split(stone int64) []int64 {
+func split(stone int) []int {
 	if stone == 0 {
-		return []int64{1}
-	} else {
-		strNum := fmt.Sprintf("%d", stone)
-		if len(strNum)%2 == 0 {
-			left := utils.Must(strconv.ParseInt(strNum[0:len(strNum)/2], 10, 64))
-			right := utils.Must(strconv.ParseInt(strNum[len(strNum)/2:], 10, 64))
-			return []int64{left, right}
-		} else {
-			return []int64{stone * 2024}
-		}
+		return []int{1}
 	}
+
+	strNum := fmt.Sprintf("%d", stone)
+	if len(strNum)%2 == 0 {
+		left := utils.Must(strconv.Atoi(strNum[0 : len(strNum)/2]))
+		right := utils.Must(strconv.Atoi(strNum[len(strNum)/2:]))
+		return []int{left, right}
+	}
+
+	return []int{stone * 2024}
 }
