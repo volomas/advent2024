@@ -138,7 +138,7 @@ func IntFields(str string) []int {
 	return res
 }
 
-func IntFieldsSep(str, sep string) []int {
+func IntFieldsRegex(str string) []int {
 	digits := digitsRegexp.FindAllString(str, -1)
 	res := make([]int, len(digits))
 	for i, f := range digits {
