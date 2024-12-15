@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var digitsRegexp *regexp.Regexp = regexp.MustCompile(`\d+`)
+var digitsRegexp *regexp.Regexp = regexp.MustCompile(`[-]?\d+`)
 
 type Grid[T any] [][]T
 
